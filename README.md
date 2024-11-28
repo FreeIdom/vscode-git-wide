@@ -1,0 +1,2 @@
+# vscode-git-wide
+Git
