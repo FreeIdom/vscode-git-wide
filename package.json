@@ -1,8 +1,8 @@
 {
     "name": "vscode-git-wide",
-    "displayName": "Git wide",
-    "description": "A Git wide",
-    "version": "0.0.1",
+    "displayName": "Git Wide",
+    "description": "Show git blame information inline at the end of each line when selecting text.",
+    "version": "0.1.0",
     "publisher": "FreeIdom",
     "author": {
         "name": "FreeIdom"
@@ -11,15 +11,15 @@
         "vscode": "^1.93.0"
     },
     "categories": [
-        "Themes",
-        "Other"
+        "Other",
+        "SCM Providers"
     ],
     "keywords": [
-        "theme",
-        "css",
-        "javascript",
-        "customization",
-        "ui"
+        "git",
+        "blame",
+        "history",
+        "inline",
+        "annotation"
     ],
     "repository": {
         "type": "git",
