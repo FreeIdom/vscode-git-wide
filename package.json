@@ -1,0 +1,59 @@
+{
+    "name": "vscode-git-wide",
+    "displayName": "Git wide",
+    "description": "A Git wide",
+    "version": "0.0.1",
+    "publisher": "FreeIdom",
+    "author": {
+        "name": "FreeIdom"
+    },
+    "engines": {
+        "vscode": "^1.93.0"
+    },
+    "categories": [
+        "Themes",
+        "Other"
+    ],
+    "keywords": [
+        "theme",
+        "css",
+        "javascript",
+        "customization",
+        "ui"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/FreeIdom/vscode-git-wide"
+    },
+    "bugs": {
+        "url": "https://github.com/FreeIdom/vscode-git-wide/issues"
+    },
+    "homepage": "https://github.com/FreeIdom/vscode-git-wide#readme",
+    "preview": true,
+    "icon": "images/logo.png",
+    "galleryBanner": {
+        "color": "#EEEEEE",
+        "theme": "light"
+    },
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./src/main",
+    "contributes": {
+        "commands": []
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.93.0",
+        "@types/node": "^20.0.0"
+    },
+    "dependencies": {},
+    "extensionKind": [
+        "ui"
+    ],
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "echo 'No compilation needed'",
+        "lint": "eslint ."
+    },
+    "license": "MIT"
+}
