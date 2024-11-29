@@ -21,13 +21,7 @@ async function isGitDirectory(projectRoot) {
   return false;
 }
 
-/**
- * Convert timestamp to relative time string
- * @param {number} timestamp Unix timestamp in seconds
- * @returns {string} Relative time string
- */
-function getRelativeTime(timestamp) {
-  const date = new Date(timestamp * 1000);
+function getRelativeTime(date) {
   const now = new Date();
   const diffSeconds = Math.floor((now - date) / 1000);
 
@@ -89,25 +83,34 @@ async function updateDecorations(editor, decorationType) {
     );
 
     // parse the output
-    const author = stdout.match(/author (.+)/)?.[1] || 'Unknown';
+    let author = stdout.match(/author (.+)/)?.[1] || 'Unknown';
     const notCommit = author === 'Not Committed Yet'
+    author = notCommit ? 'You' : author
     const time = stdout.match(/author-time ([0-9]+)/)?.[1];
 
     if (!time) { editor.setDecorations(decorationType, []); return; }
 
-    let displayText = author
-    const timeAgo = getRelativeTime(parseInt(time));
+    const date = new Date(parseInt(time) * 1000);
+    const timeAgo = getRelativeTime(date);
+    const timeAgoText = notCommit ? '' : `, ${timeAgo}`
+    const fullDateTime = notCommit ? '' : date.toLocaleString()
 
-    const summary = notCommit ? '' : stdout.match(/summary (.+)/)?.[1] || '';
-    !notCommit && (displayText += `, ${timeAgo}`)
-    summary && (displayText += ` • ${summary}`)
+
+    const summary = notCommit ? 'Uncommitted changes' : stdout.match(/summary (.+)/)?.[1] || '';
+    const displayText = `${author}${timeAgoText} • ${summary}`
 
     // create the decoration
     const length = editor.document.lineAt(lineNumber).text.length
 
     const decoration = {
       range: new vscode.Range(lineNumber, length, lineNumber, length),
-      renderOptions: { after: { contentText: displayText } }
+      renderOptions: {
+        after: {
+          contentText: displayText,
+          hover: !notCommit
+        }
+      },
+      hoverMessage: notCommit ? '' : `${fullDateTime}`
     }
 
     editor.setDecorations(decorationType, [decoration]);
@@ -120,7 +123,7 @@ async function updateDecorations(editor, decorationType) {
 
 function getDecorationType() {
   return vscode.window.createTextEditorDecorationType({
-    after: { margin: '0 0 0 2em', color: 'rgba(153, 153, 153, 0.6)' },
+    after: { margin: '0 0 0 2.5em', color: 'rgba(153, 153, 153, 0.4)' },
     rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
   });
 }
@@ -137,12 +140,18 @@ function activate(context) {
     editor = event.textEditor;
     const lastLineNumber = lastLineNumbers.get(getEditorId(editor));
     const lineNumber = editor.selection.active.line;
-    if (lastLineNumber === lineNumber) return;
+    if (lastLineNumber === lineNumber) {
+        if(editor.document.isDirty)
+            editor.setDecorations(decorationType, []);
 
+        return;
+    }
+
+    editor.setDecorations(decorationType, []);
     timeout && clearTimeout(timeout);
     timeout = setTimeout(() => {
       updateDecorations(editor, decorationType)
-    }, 200);
+    }, 100);
   }, null, context.subscriptions);
 
 
